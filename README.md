@@ -43,7 +43,6 @@ Run the commands in the folder containing `project.py` and `reviews.txt`. The pr
 ## Presentation
 
 - [Presentation slides](Presentation.pdf)
-- [Speaker notes](SPEAKER_NOTES.md)
 
 ## Source
 
