@@ -29,7 +29,7 @@ The synthetic test uses different sentence templates but repeats the same import
 
 ## Run the project
 
-For the website, open https://dokdobaka-prog.github.io/isnusl/. Enter an English review and click **Analyze review**. The page uses saved model parameters and does not train the models again.
+For the website, open https://psikonday.github.io/isnusl/. Enter an English review and click **Analyze review**. The page uses saved model parameters and does not train the models again.
 
 To run the experiment on a computer, install Python and run:
 
