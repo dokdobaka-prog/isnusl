@@ -1,10 +1,8 @@
-"""Compare sentiment models before and after adding negation examples."""
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 
-# 1. Load short restaurant reviews: 0 = negative, 1 = positive.
 reviews = []
 labels = []
 seen = set()
@@ -16,13 +14,10 @@ with open('reviews.txt', encoding='utf-8') as file:
             labels.append(int(label))
             seen.add(text.lower())
 
-# 2. Keep 20% of real reviews for the final test.
 train_text, test_text, train_labels, test_labels = train_test_split(
     reviews, labels, test_size=0.2, random_state=42, stratify=labels
 )
 
-# 3. Make simple extra training examples. NOT GOOD is negative;
-#    NOT BAD is labelled positive (a simplification).
 good_words = ['good', 'great', 'excellent', 'tasty', 'delicious', 'wonderful', 'friendly', 'fresh', 'pleasant', 'satisfying']
 bad_words = ['bad', 'awful', 'terrible', 'bland', 'disgusting', 'horrible', 'rude', 'stale', 'unpleasant', 'disappointing']
 training_patterns = ['The food was not {}.', 'The service was not {}.',
@@ -39,8 +34,6 @@ for word in bad_words:
         extra_text.append(pattern.format(word))
         extra_labels.append(1)
 
-# 4. One helper trains a vectorizer and a Naive Bayes model.
-#    Bigrams let the model see pairs like "not good".
 def train_model(text, labels):
     vectorizer = CountVectorizer(ngram_range=(1, 2))
     numbers = vectorizer.fit_transform(text)
@@ -54,7 +47,6 @@ def predict(vectorizer, model, text):
 original_vectorizer, original_model = train_model(train_text, train_labels)
 new_vectorizer, new_model = train_model(train_text + extra_text, train_labels + extra_labels)
 
-# 5. Test both models on the same real reviews.
 def show_result(name, text, labels):
     before = accuracy_score(labels, predict(original_vectorizer, original_model, text))
     after = accuracy_score(labels, predict(new_vectorizer, new_model, text))
@@ -63,7 +55,6 @@ def show_result(name, text, labels):
 print(f'Training reviews: {len(train_text)}. Extra examples: {len(extra_text)}.')
 show_result('Real test set', test_text, test_labels)
 
-# A keyword filter is only an approximate way to find negation.
 negation_text = []
 negation_labels = []
 for text, label in zip(test_text, test_labels):
@@ -73,7 +64,6 @@ for text, label in zip(test_text, test_labels):
         negation_labels.append(label)
 show_result('Real reviews with negation keywords', negation_text, negation_labels)
 
-# New sentence templates, but the same adjectives as synthetic training.
 challenge_text = []
 challenge_labels = []
 for word in good_words:
@@ -86,7 +76,6 @@ for word in bad_words:
         challenge_labels.append(1)
 show_result('Synthetic test', challenge_text, challenge_labels)
 
-# 6. The user can try short English reviews.
 print('\nEnter a short English review. Type quit to stop.')
 while True:
     text = input('Review: ').strip()
